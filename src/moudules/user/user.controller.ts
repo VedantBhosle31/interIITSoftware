@@ -1,11 +1,36 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUser } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
+
+  @Get('findUserByName')
+  findUserByName(@Body() uname: string) {
+    return this.userService.findUserByName(uname)
+  }
+
+  @Get('findUserByid')
+  findUserByid(@Body() id: string) {
+    return this.userService.findUserByid(id)
+  }
+
+  @Post('registerUser')
+  registerUser(@Body() NewUser: CreateUser) {
+    return this.userService.registerUser(NewUser)
+  }
+
+  @Patch('sentFriendReq')
+  sentFriendReq(@Body() myid: string, id: string) {
+    return this.userService.sentFriendReq(myid, id)
+  }
+
+  @Get('getAllFriendReq')
+  getAllFriendReq(@Body() id: string) {
+    return this.userService.getAllFriendReq(id)
+  }
+
 
   // @Post()
   // create(@Body() createUserDto: CreateUser) {
