@@ -13,7 +13,7 @@ import { JwsStrategy } from './moudules/auth/jwt.strategy';
     secret: 'secret',
     signOptions: { expiresIn: '60s' }
   }), MsgModule],
-  controllers: [AppController, JwsStrategy],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule { }

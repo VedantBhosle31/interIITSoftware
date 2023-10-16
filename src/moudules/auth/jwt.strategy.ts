@@ -15,9 +15,12 @@ export class JwsStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(username: string, password: string): Promise<any> {
-        return "success"
-
+        return {
+            userId: username,
+            username: password
+        }
     }
 
-
 }
+
+
