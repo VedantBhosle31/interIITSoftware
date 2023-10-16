@@ -55,4 +55,14 @@ export class UserService {
     }
     )
   }
+
+  async getAllFriendReq(id: string) {
+    const user = this.prisma.user.findFirst({
+      where: {
+        id: id
+      }
+    })
+
+    return user.friendRequestReceived
+  }
 }
