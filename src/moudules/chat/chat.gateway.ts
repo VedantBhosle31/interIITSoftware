@@ -1,35 +1,39 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  MessageBody,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { Body, Logger } from '@nestjs/common';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { Message } from '../msg/message.type';
+import { ChatService } from './chat.service';
 
 @WebSocketGateway()
 export class ChatGateway {
-  constructor() { }
+  socket: Socket;
+  constructor(private chatService: ChatService) {}
 
   @WebSocketServer()
   server: Server;
 
   onModuleInit() {
     this.server.on('connection', (socket) => {
+      this.socket = socket;
       console.log(socket.id);
-      console.log('Connected')
-    })
+      console.log('Connected');
+    });
   }
 
-
-  sendMessage(payload: any) {
-    this.server.emit('events', payload);
+  @SubscribeMessage('createGroup')
+  create() {
+    return this.chatService.createRoom(this.socket, this.server);
   }
 
-
-
-
-
-  // @SubscribeMessage('createChat')
-  // create(@MessageBody() createChatDto: CreateChatDto) {
-  //   return this.chatService.create(createChatDto);
-  // }
+  @SubscribeMessage('joinGroup')
+  join(@MessageBody() roomId: string) {
+    return this.chatService.joinRoom(this.socket, roomId, this.server);
+  }
 
   // @SubscribeMessage('findAllChat')
   // findAll() {

@@ -1,6 +1,5 @@
-
 export class Message {
-    body: string;
-    author: string;
-    receiver: string
+  body: string;
+  author: string;
+  roomId: string;
 }
