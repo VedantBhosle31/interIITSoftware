@@ -16,7 +16,7 @@ export class MsgService {
       data: {
         body: Filter.clean(msg.body),
         author: { connect: { id: msg.author } },
-        roomId: { connect: { id: msg.roomId } },
+        room: { connect: { roomId: msg.roomId } },
       },
     });
     // this.chatgateway.sendMessage(result);

@@ -18,16 +18,25 @@ model User {
   friendsRelation       User[]    @relation("friends")
   friendRequestSent     User[]    @relation("req")
   friendRequestReceived User[]    @relation("req")
-  SentMessage           message[] @relation("author")
-  RecievedMessage       message[] @relation("receiver")
+  SentMessage           Message[] @relation("author")
+  // RecievedMessage       message[] @relation("receiver")
+  rooms                 Room[]
 }
 
-model message {
-  id         String   @id @default(uuid())
-  body       String
-  author     User     @relation("author", fields: [authorId], references: [id])
-  authorId   String
-  receiver   User     @relation("receiver", fields: [receiverId], references: [id])
-  receiverId String
-  time       DateTime @default(now())
+model Message {
+  id       String   @id @default(uuid())
+  body     String
+  author   User     @relation("author", fields: [authorId], references: [id])
+  authorId String
+  // receiver   User     @relation("receiver", fields: [receiverId], references: [id])
+  // receiverId String
+  room     Room     @relation("room", fields: [roomId], references: [roomId])
+  roomId   String
+  time     DateTime @default(now())
+}
+
+model Room {
+  roomId   String    @id @default(uuid())
+  messages Message[] @relation("room")
+  users    User[]
 }

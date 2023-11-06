@@ -4,15 +4,21 @@ import {
   MessageBody,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Body, Logger } from '@nestjs/common';
+import { Body, Logger, UseGuards } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { Message } from '../msg/message.type';
 import { ChatService } from './chat.service';
+import { RoomService } from '../room/room.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { WsAuthGuard } from '../auth/ws-auth/ws-auth.guard';
 
 @WebSocketGateway()
 export class ChatGateway {
   socket: Socket;
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatService: ChatService,
+    private roomServise: RoomService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -25,14 +31,16 @@ export class ChatGateway {
     });
   }
 
+  @UseGuards(WsAuthGuard)
   @SubscribeMessage('createGroup')
-  create() {
-    return this.chatService.createRoom(this.socket, this.server);
+  create(@MessageBody() body: any) {
+    return this.roomServise.createRoom(this.socket, this.server);
   }
 
+  @UseGuards(WsAuthGuard)
   @SubscribeMessage('joinGroup')
   join(@MessageBody() roomId: string) {
-    return this.chatService.joinRoom(this.socket, roomId, this.server);
+    return this.roomServise.joinRoom(this.socket, roomId, this.server);
   }
 
   // @SubscribeMessage('findAllChat')
